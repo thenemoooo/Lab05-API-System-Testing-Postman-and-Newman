@@ -1,0 +1,39 @@
+newman
+
+Lab05-Collection-AI-Generated
+
+❏ AI Test 1: Happy Path
+↳ Setup Student
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 18ms]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Success
+  POST http://localhost:3000/registrations [201 Created, 202B, 1ms]
+  ✓  AI Generic Status Check
+
+❏ AI Test 2: Bad JSON (AI Discovered Boundary)
+↳ Register - Invalid JSON Body
+  POST http://localhost:3000/registrations [400 Bad Request, 199B, 1ms]
+  ✓  AI Discovered ERROR_BAD_JSON Check
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │               4 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │               2 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               0 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │               2 │               0 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 62ms                                    │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 91B (approx)                           │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 5ms [min: 1ms, max: 18ms, s.d.: 7ms] │
+└─────────────────────────────────────────────────────────────┘

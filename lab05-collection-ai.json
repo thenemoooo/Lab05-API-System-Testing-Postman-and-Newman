@@ -1,0 +1,92 @@
+{
+	"info": {
+		"name": "Lab05-Collection-AI-Generated",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "AI Test 1: Happy Path",
+			"item": [
+				{
+					"name": "Setup Student",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\"status\": \"active\", \"coursesTaken\": [\"CS201\"]}"},
+						"url": {"raw": "{{baseUrl}}/students/B231234567", "host": ["{{baseUrl}}"], "path": ["students", "B231234567"]}
+					}
+				},
+				{
+					"name": "Setup Course",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\"prerequisites\": [\"CS201\"]}"},
+						"url": {"raw": "{{baseUrl}}/courses/CS313", "host": ["{{baseUrl}}"], "path": ["courses", "CS313"]}
+					}
+				},
+				{
+					"name": "Register - Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('AI Generic Status Check', function () {",
+									"    if (pm.response.code === 201) {",
+									"        pm.response.to.have.status(201);",
+									"        pm.expect(pm.response.json().result).to.eql('OK');",
+									"        pm.expect(pm.response.json()).to.have.property('registrationID');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\"studentID\": \"B231234567\", \"courseID\": \"CS313\"}"},
+						"url": {"raw": "{{baseUrl}}/registrations", "host": ["{{baseUrl}}"], "path": ["registrations"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Test 2: Bad JSON (AI Discovered Boundary)",
+			"item": [
+				{
+					"name": "Register - Invalid JSON Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('AI Discovered ERROR_BAD_JSON Check', function () {",
+									"    pm.response.to.have.status(400);",
+									"    pm.expect(pm.response.json().result).to.eql('ERROR_BAD_JSON');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{ invalid_json_syntax }"},
+						"url": {"raw": "{{baseUrl}}/registrations", "host": ["{{baseUrl}}"], "path": ["registrations"]}
+					}
+				}
+			]
+		}
+	]
+}
