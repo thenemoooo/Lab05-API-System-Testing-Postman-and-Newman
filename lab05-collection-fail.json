@@ -1,0 +1,67 @@
+{
+	"info": {
+		"name": "Lab05-Collection-Fail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "TC1: Happy Path - Intentional Fail",
+			"item": [
+				{
+					"name": "Setup Student",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\": \"active\", \"coursesTaken\": [\"CS201\"]}"
+						},
+						"url": {"raw": "{{baseUrl}}/students/B231234567", "host": ["{{baseUrl}}"], "path": ["students", "B231234567"]}
+					}
+				},
+				{
+					"name": "Setup Course",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\": [\"CS201\"]}"
+						},
+						"url": {"raw": "{{baseUrl}}/courses/CS313", "host": ["{{baseUrl}}"], "path": ["courses", "CS313"]}
+					}
+				},
+				{
+					"name": "Register - Intentional Status Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200 (Intentional Fail, Expects 201)', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\": \"B231234567\", \"courseID\": \"CS313\"}"
+						},
+						"url": {"raw": "{{baseUrl}}/registrations", "host": ["{{baseUrl}}"], "path": ["registrations"]}
+					}
+				}
+			]
+		}
+	]
+}

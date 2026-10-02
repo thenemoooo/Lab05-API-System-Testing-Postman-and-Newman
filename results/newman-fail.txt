@@ -1,0 +1,41 @@
+newman
+
+Lab05-Collection-Fail
+
+❏ TC1: Happy Path - Intentional Fail
+↳ Setup Student
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 15ms]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Intentional Status Fail
+  POST http://localhost:3000/registrations [201 Created, 202B, 1ms]
+  1. Status code is 200 (Intentional Fail, Expects 201)
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │               3 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               0 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │               1 │               1 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 50ms                                    │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 64B (approx)                           │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 5ms [min: 1ms, max: 15ms, s.d.: 6ms] │
+└─────────────────────────────────────────────────────────────┘
+
+[31m  # [39m[31m failure        [39m[31m detail                                                                           [39m
+[90m    [39m[90m                [39m[90m                                                                                  [39m
+ 1.  AssertionError  Status code is 200 (Intentional Fail, Expects 201)                               
+                     expected response to have status code 200 but got 201                            
+                     at assertion:0 in test-script                                                    
+                     inside "TC1: Happy Path - Intentional Fail / Register - Intentional Status Fail" 

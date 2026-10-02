@@ -1,0 +1,108 @@
+newman
+
+Lab05-Collection-Pass
+
+❏ TC1: Happy Path - Successful Registration
+↳ Setup Student
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 20ms]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Success
+  POST http://localhost:3000/registrations [201 Created, 202B, 1ms]
+  ✓  Status code is 201
+  ✓  Result is OK and has registrationID
+
+❏ TC2: Error - No Student
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Student Not Found
+  POST http://localhost:3000/registrations [200 OK, 192B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_NO_STUDENT
+
+❏ TC3: Error - Inactive Student
+↳ Setup Inactive Student
+  PUT http://localhost:3000/students/B231234568 [200 OK, 178B, 1ms]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Inactive Student
+  POST http://localhost:3000/registrations [200 OK, 198B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_INACTIVE_STUDENT
+
+❏ TC4: Error - No Course
+↳ Setup Student
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 1ms]
+
+↳ Register - Course Not Found
+  POST http://localhost:3000/registrations [200 OK, 191B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_NO_COURSE
+
+❏ TC5: Error - Missing Prerequisites
+↳ Setup Student Without Prereq
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 0µs]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Missing Prereq
+  POST http://localhost:3000/registrations [200 OK, 215B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_PREREQUISITES
+
+❏ TC6: Error - Bad Request Missing Field
+↳ Register - Missing CourseID
+  POST http://localhost:3000/registrations [400 Bad Request, 202B, 1ms]
+  ✓  Status code is 400
+  ✓  Result is ERROR_BAD_REQUEST
+
+❏ TC7: Combination Error - No Student Priority
+↳ Register - Missing Both Student & Course
+  POST http://localhost:3000/registrations [200 OK, 192B, 1ms]
+  ✓  Status code is 200
+  ✓  Priority result is ERROR_NO_STUDENT
+
+❏ TC8: Edge Case - Course Without Prereq
+↳ Setup Student Empty Courses
+  PUT http://localhost:3000/students/B231234569 [200 OK, 178B, 1ms]
+
+↳ Setup No Prereq Course
+  PUT http://localhost:3000/courses/CS101 [200 OK, 178B, 1ms]
+
+↳ Register - No Prereq Success
+  POST http://localhost:3000/registrations [201 Created, 202B, 1ms]
+  ✓  Status code is 201
+  ✓  Result is OK
+
+❏ Task 5: Public API - JSONPlaceholder
+↳ GET Public Users
+  GET https://jsonplaceholder.typicode.com/users [200 OK, 6.6kB, 111ms]
+  ✓  Status code is 200
+  ✓  Response is array
+  ✓  First user is Leanne Graham
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               19 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │                9 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                0 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               19 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 318ms                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 6.07kB (approx)                          │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 7ms [min: 1ms, max: 111ms, s.d.: 24ms] │
+└───────────────────────────────────────────────────────────────┘
