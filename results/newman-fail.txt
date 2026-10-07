@@ -1,41 +1,115 @@
 newman
 
-Lab05-Collection-Fail
+Lab05-Collection-Pass
 
-❏ TC1: Happy Path - Intentional Fail
+❏ TC1: Happy Path - Successful Registration
 ↳ Setup Student
-  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 15ms]
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 12ms]
 
 ↳ Setup Course
   PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
 
-↳ Register - Intentional Status Fail
+↳ Register - Success
   POST http://localhost:3000/registrations [201 Created, 202B, 1ms]
-  1. Status code is 200 (Intentional Fail, Expects 201)
+  1. Status code is 201
+  ✓  Result is OK and has registrationID
 
-┌─────────────────────────┬─────────────────┬─────────────────┐
-│                         │        executed │          failed │
-├─────────────────────────┼─────────────────┼─────────────────┤
-│              iterations │               1 │               0 │
-├─────────────────────────┼─────────────────┼─────────────────┤
-│                requests │               3 │               0 │
-├─────────────────────────┼─────────────────┼─────────────────┤
-│            test-scripts │               1 │               0 │
-├─────────────────────────┼─────────────────┼─────────────────┤
-│      prerequest-scripts │               0 │               0 │
-├─────────────────────────┼─────────────────┼─────────────────┤
-│              assertions │               1 │               1 │
-├─────────────────────────┴─────────────────┴─────────────────┤
-│ total run duration: 50ms                                    │
-├─────────────────────────────────────────────────────────────┤
-│ total data received: 64B (approx)                           │
-├─────────────────────────────────────────────────────────────┤
-│ average response time: 5ms [min: 1ms, max: 15ms, s.d.: 6ms] │
-└─────────────────────────────────────────────────────────────┘
+❏ TC2: Error - No Student
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
 
-[31m  # [39m[31m failure        [39m[31m detail                                                                           [39m
-[90m    [39m[90m                [39m[90m                                                                                  [39m
- 1.  AssertionError  Status code is 200 (Intentional Fail, Expects 201)                               
-                     expected response to have status code 200 but got 201                            
-                     at assertion:0 in test-script                                                    
-                     inside "TC1: Happy Path - Intentional Fail / Register - Intentional Status Fail" 
+↳ Register - Student Not Found
+  POST http://localhost:3000/registrations [200 OK, 192B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_NO_STUDENT
+
+❏ TC3: Error - Inactive Student
+↳ Setup Inactive Student
+  PUT http://localhost:3000/students/B231234568 [200 OK, 178B, 1ms]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Inactive Student
+  POST http://localhost:3000/registrations [200 OK, 198B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_INACTIVE_STUDENT
+
+❏ TC4: Error - No Course
+↳ Setup Student
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 1ms]
+
+↳ Register - Course Not Found
+  POST http://localhost:3000/registrations [200 OK, 191B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_NO_COURSE
+
+❏ TC5: Error - Missing Prerequisites
+↳ Setup Student Without Prereq
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 1ms]
+
+↳ Setup Course
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 1ms]
+
+↳ Register - Missing Prereq
+  POST http://localhost:3000/registrations [200 OK, 215B, 1ms]
+  ✓  Status code is 200
+  ✓  Result is ERROR_PREREQUISITES
+
+❏ TC6: Error - Bad Request Missing Field
+↳ Register - Missing CourseID
+  POST http://localhost:3000/registrations [400 Bad Request, 202B, 1ms]
+  ✓  Status code is 400
+  ✓  Result is ERROR_BAD_REQUEST
+
+❏ TC7: Combination Error - No Student Priority
+↳ Register - Missing Both Student & Course
+  POST http://localhost:3000/registrations [200 OK, 192B, 1ms]
+  ✓  Status code is 200
+  ✓  Priority result is ERROR_NO_STUDENT
+
+❏ TC8: Edge Case - Course Without Prereq
+↳ Setup Student Empty Courses
+  PUT http://localhost:3000/students/B231234569 [200 OK, 178B, 1ms]
+
+↳ Setup No Prereq Course
+  PUT http://localhost:3000/courses/CS101 [200 OK, 178B, 1ms]
+
+↳ Register - No Prereq Success
+  POST http://localhost:3000/registrations [201 Created, 202B, 0µs]
+  ✓  Status code is 201
+  ✓  Result is OK
+
+❏ Task 5: Public API - JSONPlaceholder
+↳ GET Public Users
+  GET https://jsonplaceholder.typicode.com/users [200 OK, 6.6kB, 2.4s]
+  ✓  Status code is 200
+  ✓  Response is array
+  ✓  First user is Leanne Graham
+
+┌─────────────────────────┬───────────────────┬───────────────────┐
+│                         │          executed │            failed │
+├─────────────────────────┼───────────────────┼───────────────────┤
+│              iterations │                 1 │                 0 │
+├─────────────────────────┼───────────────────┼───────────────────┤
+│                requests │                19 │                 0 │
+├─────────────────────────┼───────────────────┼───────────────────┤
+│            test-scripts │                 9 │                 0 │
+├─────────────────────────┼───────────────────┼───────────────────┤
+│      prerequest-scripts │                 0 │                 0 │
+├─────────────────────────┼───────────────────┼───────────────────┤
+│              assertions │                19 │                 1 │
+├─────────────────────────┴───────────────────┴───────────────────┤
+│ total run duration: 2.6s                                        │
+├─────────────────────────────────────────────────────────────────┤
+│ total data received: 6.07kB (approx)                            │
+├─────────────────────────────────────────────────────────────────┤
+│ average response time: 129ms [min: 1ms, max: 2.4s, s.d.: 542ms] │
+└─────────────────────────────────────────────────────────────────┘
+
+[31m  # [39m[31m failure        [39m[31m detail                                                                  [39m
+[90m    [39m[90m                [39m[90m                                                                         [39m
+ 1.  AssertionError  Status code is 201                                                      
+                     expected response to have status code 404 but got 201                   
+                     at assertion:0 in test-script                                           
+                     inside "TC1: Happy Path - Successful Registration / Register - Success" 
